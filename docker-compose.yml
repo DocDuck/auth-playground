@@ -1,0 +1,46 @@
+version: '3.8'
+services:
+  frontend:
+    build:
+      context: ./frontend       # Path to the frontend application's Dockerfile or build context
+    ports:
+      - 3000:3000               # Map the container's port 3000 to the host's port 3000
+    depends_on:
+      - backend                 # Ensure the backend service is started before the frontend
+    networks:
+      - app-network             # Connect the frontend service to the app-network
+
+  backend:
+    build:
+      context: ./backend        # Path to the backend application's Dockerfile or build context
+    ports:
+      - 5000:5000               # Map the container's port 5000 to the host's port 5000
+    depends_on:
+      - postgres                # Ensure the PostgreSQL service is started before the backend
+      - redis                   # Ensure the Redis service is started before the backend
+    networks:
+      - app-network             # Connect the backend service to the app-network
+
+  postgres:
+    image: postgres:latest      # Use the latest version of the PostgreSQL image from Docker Hub
+    restart: always             # Always restart the PostgreSQL service if it stops
+    environment:
+      POSTGRES_USER: postgres        # Set the PostgreSQL username
+      POSTGRES_PASSWORD: postgres   # Set the PostgreSQL password
+      POSTGRES_DB: postgres        # Set the default database name
+    volumes:
+      - postgres-data:/var/lib/postgresql/data  # Persist PostgreSQL data between container restarts
+    networks:
+      - app-network             # Connect the PostgreSQL service to the app-network
+
+  redis:
+    image: redis:latest         # Use the latest version of the Redis image from Docker Hub
+    restart: always             # Always restart the Redis service if it stops
+    networks:
+      - app-network             # Connect the Redis service to the app-network
+
+networks:
+  app-network:                  # Create a network for communication between services
+
+volumes:
+  postgres-data:                # Create a volume for persisting PostgreSQL data
