@@ -1,7 +1,7 @@
 FROM node:18-alpine
 
 # Create app directory
-WORKDIR /app/backend
+WORKDIR /app/frontend
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
